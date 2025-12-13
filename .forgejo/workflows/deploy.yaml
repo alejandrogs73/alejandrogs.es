@@ -8,9 +8,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Zola
-        run: |
-          zola build
+
+      - name: Build con Nix
+        run: nix-shell -p zola --run "zola build"
 
       - name: Nginx
         run: |
