@@ -1,0 +1,18 @@
+name: Zola
+on: [push]
+
+jobs:
+  build-and-deploy:
+    runs-on: native:host 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Zola
+        run: |
+          zola build
+
+      - name: Nginx
+        run: |
+          rm -rf /var/www/alejandrogs.es/*
+          cp -r public/* /var/www/alejandrogs.es/

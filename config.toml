@@ -1,0 +1,15 @@
+# config.toml
+base_url = "https://alejandrogs.es"
+title = "Alejandro GS"
+description = "Ingeniería, Soberanía y Software Libre."
+default_language = "es"
+minify_html = true
+
+[markdown]
+highlight_code = true
+highlight_theme = "gruvbox-dark" # Un clásico de los ingenieros
+
+[extra]
+author = "Alejandro"
+twitter = "https://twitter.com/alejandro_gs73" # (Cámbielo o bórrelo)
+github = "https://github.com/alejandrogs73"
