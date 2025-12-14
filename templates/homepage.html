@@ -1,66 +1,244 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-<main>
-    <article>
-        <section class="body" style="margin-bottom: 4rem;">
-            {{ section.content | safe }}
-        </section>
-
-        <section class="recent-posts">
-            <div style="border-bottom: 1px solid var(--content-border-color, #333); margin-bottom: 2rem;"></div>
-           
-        
-      {# Inicio seccion "BITACORA" #}
-
-
-            <h1 style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2rem; color: #888;">
-                Bitácora
-            </h1>
-
-            {% set posts = get_section(path="posts/_index.md") %}
-
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                {% for page in posts.pages | sort(attribute="date") | reverse | slice(end=3) %}
-                <li style="margin-bottom: 2.5rem;">
-                    
-                    <div style="font-family: monospace; font-size: 0.85rem; color: #666; margin-bottom: 0.25rem;">
-                        > {{ page.date | date(format="%Y-%m-%d") }}
-                    </div>
-
-                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1.5rem;">
-                        <a href="{{ page.permalink }}" style="text-decoration: none; border-bottom: 1px dashed transparent; color: inherit;">
-                            {{ page.title }}
-                        </a>
-                    </h3>
-
-                    <p style="margin: 0; line-height: 1.6; color: var(--text-color, #ccc);">
-                        {{ page.description | default(value="Sin descripción.") }}
-                    </p>
-                    
-                </li>
-                {% endfor %}
-            </ul>
-            <div style="text-align: right; margin-top: 1rem;">
-                <a href="{{ posts.permalink }}" style="font-family: monospace; text-decoration: none; border: 1px solid #444; padding: 0.5rem 1rem; border-radius: 4px;">
-                    Ver todos [{{ posts.pages | length }}] &rarr;
-                </a>
-            </div>
-
-      {# Fin seccion "BITACORA" #}
-
-        </section>
-    </article>
-</main>
-
 <style>
-    .recent-posts h3 a:hover {
-        color: #fe8019 !important; /* Naranja acento */
-        border-bottom-color: #fe8019 !important;
+    /* Layout: Proporciones 33% | 50% | 17% */
+    .command-center {
+        display: grid;
+        /* Usamos 'fr' (fracciones) para que Zola calcule los % restando el hueco (gap) automáticamente */
+        grid-template-columns: 33fr 50fr 17fr; 
+        gap: 2rem;
+        
+        width: 80vw; 
+        max-width: 1800px;
+        
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -40vw; /* Mitad de 80vw */
+        margin-right: -40vw;
+        
+        margin-top: 4rem;
+        box-sizing: border-box;
     }
-    .recent-posts a {
-        color: inherit;
-        transition: color 0.2s ease;
+
+    /* Responsive: Móvil/Tablet vertical */
+    @media (max-width: 1200px) {
+        .command-center { 
+            grid-template-columns: 1fr; 
+            width: 94%; 
+        }
+        .sidebar-left { order: 1; }
+        .main-deck { order: 2; }
+        .sidebar-right { order: 3; }
     }
+
+    /* === MÓDULOS GENÉRICOS === */
+    .module-box {
+        border: 1px solid var(--content-border-color, #333);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .module-header {
+        font-family: monospace;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        color: #888;
+        border-bottom: 1px solid #333;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* === NOTAS (Globos) === */
+    .speech-bubble {
+        position: relative;
+        background: #1a1a1a;
+        border: 1px solid #444;
+        border-radius: 6px;
+        padding: 0.8rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.85rem;
+        box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+    }
+    .speech-bubble::after { 
+        content: ''; position: absolute; left: -10px; top: 15px;
+        border-width: 10px 10px 10px 0; border-style: solid;
+        border-color: transparent #444 transparent transparent;
+    }
+
+    .note-date { 
+        font-family: monospace; font-size: 0.7rem; color: #fe8019; 
+        display: block; margin-bottom: 0.3rem; border-bottom: 1px dashed #333; padding-bottom: 2px;
+    }
+    .note-content p { margin: 0; line-height: 1.3; color: #ccc; }
+
+    /* === PROMETEO (ASCII FIX) === */
+    pre.ascii-mascot {
+        font-family: 'Courier New', 'Courier', monospace;
+        font-weight: bold;
+        font-size: 11px;
+        line-height: 11px;
+        color: #fe8019;
+        display: flex;
+        justify-content: center;
+        overflow-x: hidden;
+        margin: 0 0 1.5rem 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+    }
+
+    /* === REDES SOCIALES === */
+    ul.rrss-list { list-style: none; padding: 0; margin: 0; }
+    ul.rrss-list li { margin-bottom: 0.5rem; display: flex; align-items: center; font-family: monospace; font-size: 0.9rem; }
+    ul.rrss-list li span { margin-right: 0.5rem; }
+    ul.rrss-list a { text-decoration: none; color: #ccc; transition: color 0.2s; }
+    ul.rrss-list a:hover { color: #fe8019; }
+
+    /* Estilos para el Markdown del Blogroll */
+    .webroll-content ul { list-style: none; padding: 0; margin: 0; }
+    .webroll-content li { margin-bottom: 0.5rem; font-family: monospace; font-size: 0.85rem; }
+    .webroll-content a { text-decoration: none; color: #ccc; transition: color 0.2s; }
+    .webroll-content a:hover { color: #fe8019; }
+
 </style>
+
+<div class="command-center">
+
+    <aside class="sidebar-left">
+        <div class="module-box" style="border-top: 2px solid #fe8019;">
+            <div class="module-header">
+                <span>:: PROMETEO ::</span> <span style="color: #0f0;">● ONLINE</span>
+            </div>
+            
+            <pre class="ascii-mascot">
+  (  )   (   )  )
+   ) (   )  (  (
+   ( )  (    ) )
+   _____________
+  &lt;  PROMETEO   &gt;
+   \___________/
+     |  |  |
+    _|_ |_ |_
+            </pre>
+            
+            <div style="font-size: 0.95rem; line-height: 1.6; color: #ddd;">
+                {{ section.content | safe }}
+            </div>
+        </div>
+
+        <div class="module-box">
+            <div class="module-header">:: SISTEMAS ::</div>
+            <ul style="list-style: none; padding: 0; margin: 0; font-family: monospace;">
+                <li style="margin-bottom: 0.5rem;"><a href="/" style="text-decoration: none;">> /root</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="/posts" style="text-decoration: none;">> /bitacora</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="/about" style="text-decoration: none;">> /sobre_mi</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="/contact" style="text-decoration: none;">> /contacto</a></li>
+            </ul>
+        </div>
+
+        <div class="module-box">
+            <div class="module-header">:: CONEXIONES ::</div>
+            <ul class="rrss-list">
+                <li><span>📧</span> <a href="mailto:mail@alejandrogs.es">Correo</a></li>
+                <li><span>🛡️</span> <a href="https://git.alejandrogs.es" target="_blank">Forgejo</a></li>
+                <li><span>🐙</span> <a href="https://github.com/alejandrogs73" target="_blank">GitHub</a></li>
+                <li><span>🐦</span> <a href="https://x.com/alejandro_gs73" target="_blank">Twitter</a></li>
+                <li><span>🐘</span> <a href="https://fosstodon.org/@alejandrogs73" target="_blank">Mastodon</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main class="main-deck">
+        {% set posts = get_section(path="posts/_index.md") %}
+        
+        {% for page in posts.pages | sort(attribute="date") | reverse | slice(end=5) %}
+        <article class="module-box" style="border-left: 1px solid #fe8019;">
+            <header style="margin-bottom: 1rem;">
+                <div style="font-family: monospace; font-size: 0.8rem; color: #666; margin-bottom: 0.5rem;">
+                    [{{ page.date | date(format="%Y-%m-%d") }}]
+                </div>
+                <h2 style="margin: 0; font-size: 1.8rem; letter-spacing: -1px;">
+                    <a href="{{ page.permalink }}" style="text-decoration: none; color: inherit; border-bottom: none;">
+                        {{ page.title }}
+                    </a>
+                </h2>
+            </header>
+            <p style="margin: 0; line-height: 1.6; color: var(--text-color, #ccc); font-size: 1.05rem;">
+                {{ page.description | default(value="Sin descripción.") }}
+            </p>
+            <div style="margin-top: 1rem;">
+                <a href="{{ page.permalink }}" style="font-size: 0.85rem; text-decoration: underline; color: #fe8019;">Leer entrada &rarr;</a>
+            </div>
+        </article>
+        {% endfor %}
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{{ posts.permalink }}" style="font-family: monospace; border: 1px solid #444; padding: 0.8rem 2rem; text-decoration: none;">
+                Ver archivo completo
+            </a>
+        </div>
+    </main>
+
+    <aside class="sidebar-right">
+        
+        <a href="/atom.xml" style="display: block; width: 100%; box-sizing: border-box; background: #fe8019; color: #000; text-align: center; padding: 1rem; font-family: monospace; font-weight: bold; font-size: 1.1rem; text-decoration: none; border: 1px solid #fe8019; margin-bottom: 2rem; text-transform: uppercase;">
+            📡 RSS FEED
+        </a>
+
+        <div style="margin-bottom: 1rem; font-family: monospace; color: #888; text-transform: uppercase; font-size: 0.8rem;">
+            :: LOGS ::
+        </div>
+        
+        {% set notas = get_section(path="notas/_index.md") %}
+        
+        {% for note in notas.pages | sort(attribute="date") | reverse | slice(end=6) %}
+        <div class="speech-bubble">
+            <span class="note-date">@{{ note.date | date(format="%Y-%m-%d") }}</span>
+            <div class="note-content">
+                {{ note.content | safe }}
+            </div>
+        </div>
+        {% else %}
+        <div class="speech-bubble">
+            <p style="color: #666; font-size: 0.8rem;">Sin datos...</p>
+        </div>
+        {% endfor %}
+
+        <div class="module-box" style="margin-top: 3rem;">
+            <div class="module-header">:: WEBROLL ::</div>
+            
+            {% set webroll = get_page(path="webroll.md") %}
+            <div class="webroll-content">
+                {{ webroll.content | safe }}
+            </div>
+        </div>
+
+          <div class="badge-rack">
+                <img src="https://yesterweb.org/no-to-web3/img/roly-saynotoweb3.gif" alt="NoWEB3"/>
+                <img src="https://88x31.kate.pet/madeon_linux.gif" height="31" />
+                <img src="https://88x31.kate.pet/mastodon-flat.png" height="31" />
+                <img src="https://88x31.kate.pet/visitmini.gif" height="31" />
+                <img src="https://88x31.kate.pet/firefox_now.png" height="31" />
+                <img src="https://88x31.kate.pet/gamecube.png" height="31" />
+                <img src="https://88x31.kate.pet/yoshihatchbutton.gif" height="31" />
+                <img src="https://diegologs.com/assets/images/banners/neovim.gif" height="31" />
+
+
+        </div>
+
+
+        <div class="module-box" style="text-align: center; font-size: 0.75rem; color: #666; margin-top: 3rem; padding: 1rem;">
+            <p style="margin: 0;">SYS: ONLINE</p>
+            <p style="margin: 0;">LOC: ES-CA</p>
+        </div>
+    </aside>
+
+</div>
 {% endblock main_content %}

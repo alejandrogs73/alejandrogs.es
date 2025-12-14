@@ -8,6 +8,10 @@ description = "Ingeniería, Soberanía y Software Libre."
 default_language = "es"
 minify_html = true
 
+generate_feeds = true 
+feed_filenames = ["atom.xml"]
+
+
 build_search_index = true
 
 [search]
