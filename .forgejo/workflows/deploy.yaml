@@ -10,19 +10,19 @@ jobs:
 
 
       - name: Instalar Zola y Construir
-      run: |
-        # 1. Descargar Zola (versión estática para Linux)
-        curl -L https://github.com/getzola/zola/releases/download/v0.19.1/zola-v0.19.1-x86_64-unknown-linux-gnu.tar.gz -o zola.tar.gz
-        
-        # 2. Descomprimir
-        tar -xzf zola.tar.gz
-        
-        # 3. Dar permisos de ejecución (por si acaso)
-        chmod +x zola
-        
-        # 4. Construir usando el binario local (./zola)
-        ./zola build
-
+        run: |
+          # 1. Descargar Zola (versión estática para Linux)
+          curl -L https://github.com/getzola/zola/releases/download/v0.19.1/zola-v0.19.1-x86_64-unknown-linux-gnu.tar.gz -o zola.tar.gz
+          
+          # 2. Descomprimir
+          tar -xzf zola.tar.gz
+          
+          # 3. Dar permisos de ejecución (por si acaso)
+          chmod +x zola
+          
+          # 4. Construir usando el binario local (./zola)
+          ./zola build
+  
       - name: Nginx
         run: |
           rm -rf /var/www/alejandrogs.es/*
