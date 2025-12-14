@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<main>
+    <article>
+        <section class="body" style="margin-bottom: 4rem;">
+            {{ section.content | safe }}
+        </section>
+
+        <section class="recent-posts">
+            <div style="border-bottom: 1px solid var(--content-border-color, #333); margin-bottom: 2rem;"></div>
+           
+        
+      {# Inicio seccion "BITACORA" #}
+
+
+            <h1 style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2rem; color: #888;">
+                Bitácora
+            </h1>
+
+            {% set posts = get_section(path="posts/_index.md") %}
+
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                {% for page in posts.pages | sort(attribute="date") | reverse | slice(end=3) %}
+                <li style="margin-bottom: 2.5rem;">
+                    
+                    <div style="font-family: monospace; font-size: 0.85rem; color: #666; margin-bottom: 0.25rem;">
+                        > {{ page.date | date(format="%Y-%m-%d") }}
+                    </div>
+
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1.5rem;">
+                        <a href="{{ page.permalink }}" style="text-decoration: none; border-bottom: 1px dashed transparent; color: inherit;">
+                            {{ page.title }}
+                        </a>
+                    </h3>
+
+                    <p style="margin: 0; line-height: 1.6; color: var(--text-color, #ccc);">
+                        {{ page.description | default(value="Sin descripción.") }}
+                    </p>
+                    
+                </li>
+                {% endfor %}
+            </ul>
+            <div style="text-align: right; margin-top: 1rem;">
+                <a href="{{ posts.permalink }}" style="font-family: monospace; text-decoration: none; border: 1px solid #444; padding: 0.5rem 1rem; border-radius: 4px;">
+                    Ver todos [{{ posts.pages | length }}] &rarr;
+                </a>
+            </div>
+
+      {# Fin seccion "BITACORA" #}
+
+        </section>
+    </article>
+</main>
+
+<style>
+    .recent-posts h3 a:hover {
+        color: #fe8019 !important; /* Naranja acento */
+        border-bottom-color: #fe8019 !important;
+    }
+    .recent-posts a {
+        color: inherit;
+        transition: color 0.2s ease;
+    }
+</style>
+{% endblock main_content %}

@@ -1,15 +1,44 @@
 # config.toml
+
+theme = "apollo"
+taxonomies = [{ name = "tags" }]
 base_url = "https://alejandrogs.es"
-title = "Alejandro GS"
+title = "~/alejandrogs.es"
 description = "Ingeniería, Soberanía y Software Libre."
 default_language = "es"
 minify_html = true
 
-[markdown]
-highlight_code = true
-highlight_theme = "gruvbox-dark" # Un clásico de los ingenieros
+build_search_index = true
+
+[search]
+include_title = true
+include_description = true
+include_path = true
+include_content = true
+index_format = "elasticlunr_json"
 
 [extra]
-author = "Alejandro"
-twitter = "https://twitter.com/alejandro_gs73" # (Cámbielo o bórrelo)
-github = "https://github.com/alejandrogs73"
+theme = "toggle"
+fancy_code = true
+fediverse = true
+fediverse_creator = "@alejandrogs73@fosstodon.org"
+mathjax = true
+mathjax_dollar_inline_enable = true
+
+socials = [
+  { name = "twitter", url = "https://twitter.com/alejandro_gs73", icon = "twitter" },
+  { name = "github", url = "https://github.com/alejandrogs73/", icon = "github" },
+  { name = "mastodon", url = "https://fosstodon.org/@alejandrogs73/", icon = "mastodon" },
+  { name = "email", url = "mailto:mail@alejandrogs.es", icon = "email" },
+  
+
+]
+menu = [
+  { name = "/posts", url = "/posts", weight = 1 },
+  { name = "/about", url = "/about", weight = 2 },
+  { name = "/contact", url = "/contact", weight = 3 },
+]
+
+
+
+
