@@ -8,12 +8,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          submodules: recursive  # <--- ESTA ES LA CLAVE
+          submodules: recursive 
 
       - name: Construir sitio
         run: zola build
 
       - name: Nginx
         run: |
-          rm -rf /var/www/alejandrogs.es/*
-          cp -r public/* /var/www/alejandrogs.es/
+          rm -rf /var/storage/SRV/www/alejandrogs.es/*
+          cp -r public/* /var/storage/SRV/www/alejandrogs.es/
